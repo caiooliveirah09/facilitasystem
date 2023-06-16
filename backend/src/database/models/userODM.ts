@@ -34,10 +34,7 @@ export default class UserODM {
     };
   }
 
-  public async getOneUser({
-    email,
-    password,
-  }: IUser): Promise<Partial<IUser> | string> {
+  public async getOneUser({ email, password }: IUser): Promise<Partial<IUser>> {
     const user = await this.model.findOne({
       email: email,
       password: password,
@@ -45,10 +42,29 @@ export default class UserODM {
 
     if (user) {
       return {
+        id: user._id.toHexString(),
         email: user.email,
         tasks: user.tasks,
       };
     }
-    return "user not found";
+    throw new Error();
+  }
+
+  public async createNewTask(task: ITask): Promise<ITask | null> {
+    const updatedUser = await this.model.findOneAndUpdate(
+      { _id: task.id },
+      {
+        $push: { tasks: { title: task.title, description: task.description } },
+      },
+      { new: true }
+    );
+    console.log(updatedUser);
+    return task;
+  }
+
+  public async getAllTasks(id: string): Promise<IUser> {
+    const user = await this.model.findById(id);
+    if (user) return user;
+    throw new Error();
   }
 }
