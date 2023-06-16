@@ -3,3 +3,9 @@ export default interface ITask {
   title: string;
   description: string;
 }
+
+export interface ITaskWithToken {
+  token: string;
+  title: string;
+  description: string;
+}
