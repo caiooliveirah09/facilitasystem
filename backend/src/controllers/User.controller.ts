@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import StatusHttp from "../interfaces/StatusHttps";
 import UserService from "../services/User.service";
 
 export default class UserController {
@@ -19,8 +20,16 @@ export default class UserController {
   }
 
   public async getOneUser() {
-    const { body } = this.req;
-    const { status, message } = await this.service.getOneUser(body);
-    return this.res.status(status).json(message);
+    try {
+      const { body } = this.req;
+      const { status, message } = await this.service.getOneUser(body);
+      return this.res.status(status).json(message);
+    } catch (error) {
+      this.res
+        .status(StatusHttp.INTERNAL_SERVER_ERROR)
+        .json(
+          "sorry, looks like there was some internal problem, this is not your fault"
+        );
+    }
   }
 }
