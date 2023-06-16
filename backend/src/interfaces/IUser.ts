@@ -9,3 +9,14 @@ export default interface IUser {
     }
   ];
 }
+
+export interface IUserWithToken {
+  email: string;
+  tasks?: [
+    {
+      title: string;
+      description: string;
+    }
+  ];
+  token?: string;
+}
