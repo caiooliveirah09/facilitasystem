@@ -1,6 +1,6 @@
 import express from "express";
 import usersRoutes from "./routes/Users.route";
-// import tasksRoutes from "./routes/Tasks.route";
+import tasksRoutes from "./routes/Tasks.route";
 
 class App {
   public app: express.Express;
@@ -17,7 +17,7 @@ class App {
 
   private routes(): void {
     this.app.use("/users", usersRoutes);
-    // this.app.use("/tasks", tasksRoutes);
+    this.app.use("/tasks", tasksRoutes);
   }
 
   public start(PORT: number): void {
