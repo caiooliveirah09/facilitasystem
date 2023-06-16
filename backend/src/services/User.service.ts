@@ -1,7 +1,9 @@
 import UserODM from "../database/models/userODM";
 import IController from "../interfaces/IController";
-import IUser from "../interfaces/IUser";
+import IUser, { IUserWithToken } from "../interfaces/IUser";
 import StatusHttp from "../interfaces/StatusHttps";
+import { sign } from "jsonwebtoken";
+const JWT_SECRET = process.env.JWT_SECRET || "jwt_secret";
 
 export default class UserService {
   private model: UserODM;
@@ -32,19 +34,12 @@ export default class UserService {
   public async getOneUser({
     email,
     password,
-  }: IUser): Promise<IController<Partial<IUser> | string>> {
-    try {
-      const user = await this.model.getOneUser({ email, password });
-      return {
-        status: StatusHttp.OK,
-        message: user,
-      };
-    } catch (error) {
-      return {
-        status: StatusHttp.INTERNAL_SERVER_ERROR,
-        message:
-          "sorry, looks like there was some internal problem, this is not your fault",
-      };
-    }
+  }: IUser): Promise<IController<IUserWithToken>> {
+    const user = await this.model.getOneUser({ email, password });
+    const token = sign(user, JWT_SECRET, { expiresIn: "3d" });
+    return {
+      status: StatusHttp.OK,
+      message: { token, email: email, tasks: user.tasks },
+    };
   }
 }
