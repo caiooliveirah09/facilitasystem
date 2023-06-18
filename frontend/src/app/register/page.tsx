@@ -1,8 +1,14 @@
 "use client";
+import {
+  faLockOpen,
+  faUser,
+  faUserEdit,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { inputStyle } from "../page";
 import { API } from "../shared/api/api";
-const inputStyle = "text-gray-700 outline-none px-1 border-b-2 border-blue-400";
 
 export default function Register() {
   const router = useRouter();
@@ -13,11 +19,12 @@ export default function Register() {
     e.preventDefault();
     try {
       if (password === confirmPassword) {
-        const newUser = await API.post("/users", {
+        const newUser = await API.post("/users/register", {
           email: email,
           password: password,
         });
         console.log(newUser);
+        router.push("/");
       }
     } catch (error) {
       console.log(error);
@@ -26,25 +33,45 @@ export default function Register() {
   return (
     <form
       onSubmit={register}
-      className="w-full max-w-md bg-gray-50 h-96 p-2 flex flex-col gap-4 justify-center"
+      className="w-full sm:max-w-sm bg-gray-50 sm:h-fit py-20 p-2 flex flex-col gap-4 justify-center sm:rounded-3xl px-10 relative shadow-lg m-auto h-screen"
     >
-      <h1 className="text-blue-400 text-center text-4xl">Create Account</h1>
+      <div className="bg-sky-900 sm:absolute -top-14 w-24 h-24 right-0 left-0 m-auto rounded-full flex justify-center items-center">
+        <FontAwesomeIcon
+          className="text-white ml-[15px]"
+          icon={faUserEdit}
+          size="3x"
+        />
+      </div>
+      <div className="flex relative items-center">
+        <FontAwesomeIcon
+          className="absolute text-sky-900 start-1"
+          icon={faUser}
+          size="2x"
+        />
+        <input
+          type="text"
+          className={inputStyle}
+          placeholder="Digite aqui seu email"
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+        />
+      </div>
+      <div className="flex relative items-center">
+        <input
+          placeholder="Digite aqui sua senha"
+          type="password"
+          className={inputStyle}
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+        />
+        <FontAwesomeIcon
+          className="absolute text-sky-900 end-1"
+          icon={faLockOpen}
+          size="2x"
+        />
+      </div>
       <input
-        type="text"
-        className={inputStyle}
-        placeholder="digite aqui seu email"
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-      />
-      <input
-        placeholder="digite aqui sua senha"
-        type="password"
-        className={inputStyle}
-        onChange={(e) => setPassword(e.target.value)}
-        value={password}
-      />
-      <input
-        placeholder="confirme sua senha"
+        placeholder="Confirme sua senha"
         type="password"
         className={inputStyle}
         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -52,17 +79,17 @@ export default function Register() {
       />
       <button
         type="submit"
-        className="uppercase text-gray-50 bg-blue-400 w-fit mx-auto p-4 rounded"
+        className="uppercase text-gray-50 bg-sky-900 p-3 sm:absolute -bottom-6 text-center left-0 right-0 m-auto w-fit px-12 rounded-3xl shadow-md hover:brightness-90"
       >
-        sign up
+        registrar
       </button>
-      <small className="uppercase text-gray-600 text-center">
-        already have an account?{" "}
+      <small className="uppercase text-gray-500 text-center">
+        eu já tenho uma conta.{" "}
         <button
-          className="text-blue-400 uppercase"
+          className="text-sky-900 uppercase"
           onClick={() => router.push("/")}
         >
-          log in
+          clique aqui
         </button>
       </small>
     </form>

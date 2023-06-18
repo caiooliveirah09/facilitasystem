@@ -1,5 +1,8 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false;
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +18,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <main className="w-full h-screen bg-gray-200 flex items-center justify-center">
+      <body className={`${inter.className} h-full bg-gradient-radial bg-fixed`}>
+        <main className="w-full flex items-center justify-center min-h-screen">
           {children}
         </main>
       </body>

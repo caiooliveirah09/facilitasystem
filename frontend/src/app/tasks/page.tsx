@@ -73,12 +73,6 @@ export default function Tasks() {
     router.push("/");
   };
 
-  const deleteTask = async () => {
-    try {
-
-    }
-  }
-
   return (
     <div className="flex sm:rounded-3xl bg-sky-800 sm:my-4 shadow-lg  max-sm:items-center justify-center w-full max-w-md">
       {form && (
@@ -159,7 +153,7 @@ export default function Tasks() {
                     {task.description}
                   </p>
                 </div>
-                <button className="absolute top-1/2 right-0 -translate-y-1/2 h-6 w-6 bg-white rounded-full hover:brightness-75" onClick={deleteTask}>
+                <button className="absolute top-1/2 right-0 -translate-y-1/2 h-6 w-6 bg-white rounded-full hover:brightness-75">
                   <FontAwesomeIcon
                     className="text-red-400 "
                     icon={faTrash}
