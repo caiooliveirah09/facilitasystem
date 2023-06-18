@@ -1,6 +1,7 @@
 import express from "express";
 import usersRoutes from "./routes/Users.route";
 import tasksRoutes from "./routes/Tasks.route";
+import cors from "cors";
 
 class App {
   public app: express.Express;
@@ -12,6 +13,13 @@ class App {
   }
 
   private config(): void {
+    const corsOptions = {
+      credentials: true,
+      origin: function (_origin: any, callback: any) {
+        callback(null, true);
+      },
+    };
+    this.app.use(cors(corsOptions));
     this.app.use(express.json());
   }
 
