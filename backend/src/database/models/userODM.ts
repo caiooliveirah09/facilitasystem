@@ -67,4 +67,15 @@ export default class UserODM {
     if (user) return user;
     throw new Error();
   }
+
+  /*public async deleteOneTask({ id, token}: {id: string, token: string}): Promise<Void> {
+    const updatedUser = await this.model.findOneAndUpdate(
+      { _id: task.id },
+      {
+        $push: { tasks: { title: task.title, description: task.description } },
+      },
+      { new: true }
+    );
+  }
+  */
 }
