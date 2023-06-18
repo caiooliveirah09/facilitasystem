@@ -3,12 +3,12 @@ import TaskController from "../controllers/Task.controller";
 import UserController from "../controllers/User.controller";
 
 const router = Router();
-
-router.post("/", async (req, res, next) =>
+router.get("/", async (req, res, next) => res.status(200).json("ok"));
+router.post("/create", async (req, res, next) =>
   new TaskController(req, res, next).createNewTask()
 );
 
-router.get("/", async (req, res, next) =>
+router.post("/get", async (req, res, next) =>
   new TaskController(req, res, next).getAllTasks()
 );
 /*

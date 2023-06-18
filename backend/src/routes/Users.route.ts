@@ -3,11 +3,11 @@ import UserController from "../controllers/User.controller";
 
 const router = Router();
 
-router.post("/", async (req, res, next) =>
+router.post("/register", async (req, res, next) =>
   new UserController(req, res, next).createNewUser()
 );
 
-router.get("/", async (req, res, next) =>
+router.post("/login", async (req, res, next) =>
   new UserController(req, res, next).getOneUser()
 );
 
