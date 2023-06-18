@@ -29,11 +29,11 @@ export default class TaskController {
     const { status, message } = await this.service.updateOneTask(id, update);
     return this.res.status(status).json(message);
   }
+    */
 
   public async deleteOneTask() {
-    const { id } = this.req.body;
-    const { status, message } = await this.service.deleteOneTask(id);
+    const { body } = this.req.
+    const { status, message } = await this.service.deleteOneTask(body);
     return this.res.status(status).json(message);
   }
-  */
 }
