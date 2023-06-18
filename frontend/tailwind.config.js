@@ -5,6 +5,12 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  theme: {},
+  theme: {
+    extend: {
+      backgroundImage: {
+        "gradient-radial": "linear-gradient(217deg, #cd8a83, #0c4a6e 96.71%);",
+      },
+    },
+  },
   plugins: [],
 };
