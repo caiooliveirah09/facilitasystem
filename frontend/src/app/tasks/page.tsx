@@ -34,7 +34,7 @@ export default function Tasks() {
   const getTasks = async (token: string) => {
     try {
       const response = await API.get(`/tasks/${token}/`);
-      setTasks(response.data);
+      setTasks(response.data.message);
     } catch (error) {
       console.log(error);
     }

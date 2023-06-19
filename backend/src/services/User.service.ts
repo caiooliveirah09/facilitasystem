@@ -23,10 +23,10 @@ export default class UserService {
         message: newUser,
       };
     } catch (error) {
+      console.log(error);
       return {
-        status: StatusHttp.INTERNAL_SERVER_ERROR,
-        message:
-          "sorry, looks like there was some internal problem, this is not your fault",
+        status: StatusHttp.CONFLICT,
+        message: "user already exists",
       };
     }
   }

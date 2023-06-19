@@ -79,7 +79,11 @@ export default class TaskService {
       }
       throw new Error();
     } catch (error) {
-      return { status: StatusHttp.NOT_FOUND, message: "id not found" };
+      return {
+        status: StatusHttp.INTERNAL_SERVER_ERROR,
+        message:
+          "sorry, looks like there was some internal problem, this is not your fault",
+      };
     }
   }
 

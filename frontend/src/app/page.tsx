@@ -33,6 +33,7 @@ export default function Login() {
         email: email,
         password: password,
       });
+      console.log(newUser.data);
       const { token, email: user } = newUser.data;
       localStorage.setItem("user", user);
       localStorage.setItem("token", token);

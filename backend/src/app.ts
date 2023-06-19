@@ -2,6 +2,8 @@ import express from "express";
 import usersRoutes from "./routes/Users.route";
 import tasksRoutes from "./routes/Tasks.route";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import swaggerDoc from "./swagger.json";
 
 class App {
   public app: express.Express;
@@ -26,6 +28,7 @@ class App {
   private routes(): void {
     this.app.use("/users", usersRoutes);
     this.app.use("/tasks", tasksRoutes);
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
   }
 
   public start(PORT: number): void {

@@ -14,15 +14,21 @@ export default class UserController {
   }
 
   public async createNewUser() {
-    const { body } = this.req;
-    const { status, message } = await this.service.createNewUser(body);
+    const { email, password } = this.req.body;
+    const { status, message } = await this.service.createNewUser({
+      email,
+      password,
+    });
     return this.res.status(status).json(message);
   }
 
   public async getOneUser() {
     try {
-      const { body } = this.req;
-      const { status, message } = await this.service.getOneUser(body);
+      const { email, password } = this.req.body;
+      const { status, message } = await this.service.getOneUser({
+        email,
+        password,
+      });
       return this.res.status(status).json(message);
     } catch (error) {
       this.res

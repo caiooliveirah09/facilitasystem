@@ -1,0 +1,130 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Tasks",
+    "description": "Documentation from tasks api",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "paths": {
+    "/users/getOneUser": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "token": "jwt-token",
+                  "email": "string",
+                  "tasks": [
+                    {
+                      "title": "string",
+                      "description": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "user not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "users/createNewUser": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "example": {
+                  "token": "jwt-token",
+                  "email": "string",
+                  "tasks": [
+                    {
+                      "title": "string",
+                      "description": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "conflict",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "user already exists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{token}": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Get all tasks",
+        "parameters": {
+          "name": "token",
+          "in": "path",
+          "description": "user token",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      }
+    }
+  }
+}
