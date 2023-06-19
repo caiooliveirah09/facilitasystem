@@ -15,6 +15,7 @@ import {
   faUserLarge,
   faUserLock,
 } from "@fortawesome/free-solid-svg-icons";
+import { styleInputError } from "./register/page";
 
 export const inputStyle =
   "text-gray-500 outline-none w-full text-center shadow focus:shadow-lg py-2 placeholder-gray-500 rounded bg-sky-100";
@@ -23,28 +24,24 @@ export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState(false);
   const login = async (e: any) => {
     e.preventDefault();
     try {
-      const newUser = await API.post("/users/login", {
+      const newUser = await API.post("/users/getOneUser/", {
         email: email,
         password: password,
       });
-      const { token } = newUser.data;
+      const { token, email: user } = newUser.data;
+      localStorage.setItem("user", user);
       localStorage.setItem("token", token);
       router.push("/tasks");
     } catch (error) {
+      setLoginError(true);
       console.log(error);
     }
   };
-  const teste = async () => {
-    const a = await API.get("/tasks");
-    console.log("tentei");
-    console.log(a);
-  };
-  useEffect(() => {
-    teste();
-  }, []);
+
   return (
     <form
       onSubmit={login}
@@ -64,7 +61,7 @@ export default function Login() {
         />
         <input
           type="text"
-          className={inputStyle}
+          className={`${inputStyle} ${loginError && styleInputError}`}
           placeholder="Digite aqui seu email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
@@ -74,7 +71,7 @@ export default function Login() {
         <input
           placeholder="Digite aqui sua senha"
           type="password"
-          className={inputStyle}
+          className={`${inputStyle} ${loginError && styleInputError}`}
           onChange={(e) => setPassword(e.target.value)}
           value={password}
         />
@@ -84,6 +81,9 @@ export default function Login() {
           size="2x"
         />
       </div>
+      {loginError && (
+        <small className="text-red-600">usuário ou senha incorretos.</small>
+      )}
       <button
         type="submit"
         className="uppercase text-gray-50 bg-sky-900 p-3 sm:absolute -bottom-6 text-center left-0 right-0 m-auto w-fit px-12 rounded-3xl shadow-md hover:brightness-90"
@@ -93,6 +93,7 @@ export default function Login() {
       <small className="uppercase text-gray-500 text-center">
         não tem uma conta?{" "}
         <button
+          type="button"
           className="text-sky-900 uppercase"
           onClick={() => router.push("/register")}
         >
