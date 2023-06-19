@@ -4,6 +4,7 @@ import {
   faCheck,
   faCheckCircle,
   faFilePen,
+  faPen,
   faPenSquare,
   faPenToSquare,
   faPlus,
@@ -25,11 +26,13 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [form, setForm] = useState(false);
+  const [form, setForm] = useState("");
+  const [user] = useState(localStorage.getItem("user"));
+  const [taskId, setTaskId] = useState("");
   const token = localStorage.getItem("token");
   const getTasks = async (token: string) => {
     try {
-      const response = await API.post("/tasks/get", { token });
+      const response = await API.get(`/tasks/${token}/`);
       setTasks(response.data);
     } catch (error) {
       console.log(error);
@@ -41,11 +44,11 @@ export default function Tasks() {
     const hour = now.getHours();
 
     if (hour >= 6 && hour < 12) {
-      return "Bom dia!";
+      return "Bom dia,";
     } else if (hour >= 12 && hour < 18) {
-      return "Boa tarde!";
+      return "Boa tarde,";
     } else {
-      return "Boa noite!";
+      return "Boa noite,";
     }
   };
   useEffect(() => {
@@ -53,40 +56,65 @@ export default function Tasks() {
     if (token) getTasks(token);
   }, []);
 
-  const addNewTask = async () => {
-    console.log(title, description);
+  const addOrEditTask = async () => {
+    if (token) {
+      if (form === "add") {
+        try {
+          const newTask = await API.post(`/tasks/${token}`, {
+            title,
+            description,
+          });
+          console.log(newTask);
+          setTitle("");
+          setDescription("");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      if (form === "edit" && taskId) {
+        try {
+          const editedTask = await API.patch(`/tasks/${taskId}/${token}`, {
+            title,
+            description,
+          });
+          console.log(editedTask);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      setForm("");
+      await getTasks(token);
+    }
+  };
+
+  const deleteOneTask = async (taskId: string) => {
     if (token) {
       try {
-        const newTask = await API.post("/tasks/create", {
-          title,
-          description,
-          token,
-        });
-        console.log(newTask);
-        setTitle("");
-        setDescription("");
+        await API.delete(`/tasks/${taskId}/${token}`);
+        await getTasks(token);
       } catch (error) {
         console.log(error);
       }
     }
-    setForm(false);
-    router.push("/");
   };
 
   return (
-    <div className="flex sm:rounded-3xl bg-sky-800 sm:my-4 shadow-lg  max-sm:items-center justify-center w-full max-w-md">
+    <div className="flex sm:rounded-3xl bg-transparent sm:my-4 max-sm:items-center justify-center w-full max-w-md">
       {form && (
         <form
           className="right-0 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-gray-50 w-full sm:max-w-lg sm:rounded-3xl flex flex-col py-8 shadow"
-          onSubmit={addNewTask}
+          onSubmit={addOrEditTask}
         >
           <button
             className="absolute right-3 top-1 text-xl"
             onClick={() => {
               setTitle("");
               setDescription("");
-              setForm(false);
+              setForm("");
             }}
+            type="button"
           >
             <FontAwesomeIcon
               className="text-sky-900 m-auto"
@@ -128,23 +156,31 @@ export default function Tasks() {
         }`}
       >
         <div className="px-10 mb-10">
-          <h2 className="text-gray-50 text-2xl">{greetingsMessage()}</h2>
-          <h1 className="text-gray-50 text-3xl">Caio</h1>
+          <h2 className="text-gray-50 text-xl">{greetingsMessage()}</h2>
+          <h1 className="text-gray-50 text-2xl">{user}</h1>
         </div>
         <ol className="flex gap-4 flex-col bg-gray-50 w-full max-w-md m-auto p-4 rounded-3xl h-fit">
           {tasks.map((task) => (
             <li
               key={task._id}
-              className="bg-gray-100 p-3 rounded-3xl hover:brightness-90"
+              className="bg-gray-100 shadow p-3 rounded-3xl hover:scale-110 hover:shadow-2xl"
             >
               <div className="relative">
-                <div className="rounded-full w-6 h-6 flex items-center justify-center bg-green-400 absolute">
+                <button
+                  className="rounded-full w-6 h-6 flex items-center justify-center absolute hover:scale-110 hover:brightness-200"
+                  onClick={() => {
+                    setForm("edit");
+                    setTaskId(task._id);
+                    setTitle(task.title);
+                    setDescription(task.description);
+                  }}
+                >
                   <FontAwesomeIcon
                     className="text-sky-900"
-                    icon={faCheck}
+                    icon={faPen}
                     size="1x"
                   />
-                </div>
+                </button>
                 <div className="pl-7">
                   <h3 className="uppercase text-gray-700 text-lg font-bold">
                     {task.title}
@@ -153,9 +189,12 @@ export default function Tasks() {
                     {task.description}
                   </p>
                 </div>
-                <button className="absolute top-1/2 right-0 -translate-y-1/2 h-6 w-6 bg-white rounded-full hover:brightness-75">
+                <button
+                  className="absolute top-1/2 right-0 -translate-y-1/2 h-6 w-6 rounded-full hover:scale-110 hover:brightness-200"
+                  onClick={() => deleteOneTask(task._id)}
+                >
                   <FontAwesomeIcon
-                    className="text-red-400 "
+                    className="text-red-800 "
                     icon={faTrash}
                     size="1x"
                   />
@@ -166,12 +205,12 @@ export default function Tasks() {
         </ol>
       </div>
       <div
-        className={`bg-sky-800 sm:rounded-r-3xl p-1 flex gap-3 shadow-lg items-center max-sm:bottom-0 max-sm:fixed w-full max-sm:justify-center sm:flex-col sm:max-w-fit ${
+        className={`bg-sky-900 max-sm:shadow-lg sm:bg-transparent sm:rounded-r-3xl p-1 flex gap-3 items-center max-sm:bottom-0 max-sm:fixed w-full max-sm:justify-center sm:flex-col sm:max-w-fit ${
           form && "blur-sm"
         }`}
       >
         <button
-          className="text-gray-50 rounded-full w-12 h-12 right-3 bottom-3 bg-sky-900 sm:hover:scale-110 transition-all delay-75 sticky top-1"
+          className="text-gray-50 sm:rounded-full w-12 h-12 sm:hover:scale-110 transition-all delay-75 sticky top-1 text-2xl shadow-xl bg-sky-900"
           onClick={() => {
             localStorage.clear();
             router.push("/");
@@ -180,17 +219,17 @@ export default function Tasks() {
           <FontAwesomeIcon
             className="text-gray-50 m-auto"
             icon={faRightFromBracket}
-            size="2x"
+            size="1x"
           />
         </button>
         <button
-          className="text-gray-50 rounded-full w-12 h-12 right-3 bottom-3 bg-sky-900 sm:hover:scale-110 transition-all delay-75 sticky top-16"
-          onClick={() => setForm(true)}
+          className="text-gray-50 sm:rounded-full w-12 h-12 sm:hover:scale-110 transition-all delay-75 sticky top-16 text-2xl shadow-xl bg-sky-900"
+          onClick={() => setForm("add")}
         >
           <FontAwesomeIcon
             className="text-gray-50 m-auto"
             icon={faPlus}
-            size="2x"
+            size="1x"
           />
         </button>
       </div>
