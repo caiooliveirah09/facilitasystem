@@ -34,7 +34,7 @@ export default function Tasks() {
   const getTasks = async (token: string) => {
     try {
       const response = await API.get(`/tasks/${token}/`);
-      setTasks(response.data.message);
+      setTasks(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -101,6 +101,8 @@ export default function Tasks() {
       }
     }
   };
+
+  console.log(tasks);
 
   return (
     <motion.div
@@ -170,58 +172,60 @@ export default function Tasks() {
           <h1 className="text-gray-50 text-2xl">{user}</h1>
         </div>
         <ol className="flex gap-4 flex-col bg-gray-50 w-full max-w-md m-auto p-4 rounded-3xl h-fit">
-          {tasks.length === 0 && (
+          {tasks && tasks.length === 0 && (
             <motion.li>
               <h3 className="text-gray-600">
                 Você ainda não tem nenhuma tarefa, que tal adicionar uma?
               </h3>
             </motion.li>
           )}
-          {tasks.map((task, i) => (
-            <motion.li
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 * i }}
-              key={task._id}
-              className="bg-gray-100 shadow p-3 rounded-3xl hover:scale-110 hover:shadow-2xl"
-            >
-              <div className="relative">
-                <button
-                  className="rounded-full w-6 h-6 flex items-center justify-center absolute hover:scale-110 hover:brightness-200"
-                  onClick={() => {
-                    setForm("edit");
-                    setTaskId(task._id);
-                    setTitle(task.title);
-                    setDescription(task.description);
-                  }}
-                >
-                  <FontAwesomeIcon
-                    className="text-sky-900"
-                    icon={faPen}
-                    size="1x"
-                  />
-                </button>
-                <div className="pl-7">
-                  <h3 className="uppercase text-gray-700 text-lg font-bold">
-                    {task.title}
-                  </h3>
-                  <p className="text-gray-600 break-words">
-                    {task.description}
-                  </p>
+          {tasks &&
+            tasks.length > 0 &&
+            tasks.map((task, i) => (
+              <motion.li
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 * i }}
+                key={task._id}
+                className="bg-gray-100 shadow p-3 rounded-3xl hover:scale-110 hover:shadow-2xl"
+              >
+                <div className="relative">
+                  <button
+                    className="rounded-full w-6 h-6 flex items-center justify-center absolute hover:scale-110 hover:brightness-200"
+                    onClick={() => {
+                      setForm("edit");
+                      setTaskId(task._id);
+                      setTitle(task.title);
+                      setDescription(task.description);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      className="text-sky-900"
+                      icon={faPen}
+                      size="1x"
+                    />
+                  </button>
+                  <div className="pl-7">
+                    <h3 className="uppercase text-gray-700 text-lg font-bold">
+                      {task.title}
+                    </h3>
+                    <p className="text-gray-600 break-words">
+                      {task.description}
+                    </p>
+                  </div>
+                  <button
+                    className="absolute top-1/2 right-0 -translate-y-1/2 h-6 w-6 rounded-full hover:scale-110 hover:brightness-200"
+                    onClick={() => deleteOneTask(task._id)}
+                  >
+                    <FontAwesomeIcon
+                      className="text-red-800 "
+                      icon={faTrash}
+                      size="1x"
+                    />
+                  </button>
                 </div>
-                <button
-                  className="absolute top-1/2 right-0 -translate-y-1/2 h-6 w-6 rounded-full hover:scale-110 hover:brightness-200"
-                  onClick={() => deleteOneTask(task._id)}
-                >
-                  <FontAwesomeIcon
-                    className="text-red-800 "
-                    icon={faTrash}
-                    size="1x"
-                  />
-                </button>
-              </div>
-            </motion.li>
-          ))}
+              </motion.li>
+            ))}
         </ol>
       </div>
       <motion.div
