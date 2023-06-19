@@ -63,14 +63,52 @@ export default class TaskService {
       };
     }
   }
-  /* 
-  
-  public async deleteOneTask({ token, id}: { token: string, id: string}): Promise<IController<string>> {
+
+  public async deleteOneTask({
+    token,
+    taskId,
+  }: {
+    token: string;
+    taskId: string;
+  }): Promise<IController<string>> {
     try {
-      await this.model.deleteOneTask(token, id);
-      return { status: StatusHttp.OK, message: "successfully deleted" };
+      const user = verify(token as string) as IUser;
+      if (user) {
+        await this.model.deleteOneTask({ userId: user.id as string, taskId });
+        return { status: StatusHttp.OK, message: "successfully deleted" };
+      }
+      throw new Error();
     } catch (error) {
       return { status: StatusHttp.NOT_FOUND, message: "id not found" };
     }
-    */
+  }
+
+  public async updateOneTask({
+    taskId,
+    token,
+    update,
+  }: {
+    taskId: string;
+    token: string;
+    update: ITask;
+  }): Promise<IController<string>> {
+    try {
+      const user = verify(token as string) as IUser;
+      if (user) {
+        await this.model.updateOneTask({
+          userId: user.id as string,
+          taskId,
+          update,
+        });
+        return { status: StatusHttp.OK, message: "task updated" };
+      }
+      throw new Error();
+    } catch (error) {
+      return {
+        status: StatusHttp.INTERNAL_SERVER_ERROR,
+        message:
+          "sorry, looks like there was some internal problem, this is not your fault",
+      };
+    }
+  }
 }

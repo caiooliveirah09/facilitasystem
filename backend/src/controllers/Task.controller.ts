@@ -19,22 +19,28 @@ export default class TaskController {
   }
 
   public async getAllTasks() {
-    const { body } = this.req;
-    const { status, message } = await this.service.getAllTasks(body);
-    return this.res.status(status).json(message);
-  }
-  /*
-  public async updateOneTask() {
-    const { id, ...update } = this.req.body;
-    const { status, message } = await this.service.updateOneTask(id, update);
+    const { token } = this.req.params;
+    const { status, message } = await this.service.getAllTasks({ token });
     return this.res.status(status).json(message);
   }
 
+  public async updateOneTask() {
+    const { taskId, token } = this.req.params;
+    const { ...update } = this.req.body;
+    const { status, message } = await this.service.updateOneTask({
+      taskId,
+      token,
+      update,
+    });
+    return this.res.status(status).json(message);
+  }
 
   public async deleteOneTask() {
-    const { body } = this.req.
-    const { status, message } = await this.service.deleteOneTask(body);
+    const { taskId, token } = this.req.params;
+    const { status, message } = await this.service.deleteOneTask({
+      taskId,
+      token,
+    });
     return this.res.status(status).json(message);
   }
-      */
 }

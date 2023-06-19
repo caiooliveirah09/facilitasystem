@@ -51,14 +51,13 @@ export default class UserODM {
   }
 
   public async createNewTask(task: ITask): Promise<ITask | null> {
-    const updatedUser = await this.model.findOneAndUpdate(
+    await this.model.findOneAndUpdate(
       { _id: task.id },
       {
         $push: { tasks: { title: task.title, description: task.description } },
       },
       { new: true }
     );
-    console.log(updatedUser);
     return task;
   }
 
@@ -68,14 +67,40 @@ export default class UserODM {
     throw new Error();
   }
 
-  /*public async deleteOneTask({ id, token}: {id: string, token: string}): Promise<Void> {
-    const updatedUser = await this.model.findOneAndUpdate(
-      { _id: task.id },
+  public async deleteOneTask({
+    userId,
+    taskId,
+  }: {
+    userId: string;
+    taskId: string;
+  }): Promise<void> {
+    await this.model.findOneAndUpdate(
+      { _id: userId },
       {
-        $push: { tasks: { title: task.title, description: task.description } },
+        $pull: { tasks: { _id: taskId } },
       },
       { new: true }
     );
   }
-  */
+
+  public async updateOneTask({
+    userId,
+    taskId,
+    update,
+  }: {
+    userId: string;
+    taskId: string;
+    update: ITask;
+  }): Promise<void> {
+    await this.model.findOneAndUpdate(
+      { _id: userId, "tasks._id": taskId },
+      {
+        $set: {
+          "tasks.$.title": update.title,
+          "tasks.$.description": update.description,
+        },
+      },
+      { new: true }
+    );
+  }
 }
