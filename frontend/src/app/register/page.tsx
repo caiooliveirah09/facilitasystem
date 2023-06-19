@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { inputStyle } from "../page";
 import { API } from "../shared/api/api";
+import { motion } from "framer-motion";
 export const styleInputError = "bg-red-300";
 
 export default function Register() {
@@ -49,7 +50,10 @@ export default function Register() {
     }
   };
   return (
-    <form
+    <motion.form
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
       onSubmit={register}
       className="w-full sm:max-w-sm bg-gray-50 sm:h-fit py-20 p-2 flex flex-col gap-4 justify-center sm:rounded-3xl px-10 relative shadow-lg m-auto h-screen"
     >
@@ -62,9 +66,8 @@ export default function Register() {
       </div>
       <div className="flex relative items-center">
         <FontAwesomeIcon
-          className="absolute text-sky-900 start-1"
+          className="absolute text-sky-900 start-1  text-2xl"
           icon={faUser}
-          size="2x"
         />
         <input
           type="text"
@@ -83,9 +86,8 @@ export default function Register() {
           value={password}
         />
         <FontAwesomeIcon
-          className="absolute text-sky-900 end-1"
+          className="absolute text-sky-900 end-1  text-2xl"
           icon={faLockOpen}
-          size="2x"
         />
       </div>
       <input
@@ -120,6 +122,6 @@ export default function Register() {
           clique aqui
         </button>
       </small>
-    </form>
+    </motion.form>
   );
 }

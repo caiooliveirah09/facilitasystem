@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 import {
   faArrowDownShortWide,
   faCheck,
@@ -56,7 +57,8 @@ export default function Tasks() {
     if (token) getTasks(token);
   }, []);
 
-  const addOrEditTask = async () => {
+  const addOrEditTask = async (e: any) => {
+    e.preventDefault();
     if (token) {
       if (form === "add") {
         try {
@@ -101,11 +103,19 @@ export default function Tasks() {
   };
 
   return (
-    <div className="flex sm:rounded-3xl bg-transparent sm:my-4 max-sm:items-center justify-center w-full max-w-md">
+    <motion.div
+      className="flex sm:rounded-3xl bg-transparent sm:my-4 max-sm:items-center justify-center w-full max-w-md"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+    >
       {form && (
-        <form
+        <motion.form
           className="right-0 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-gray-50 w-full sm:max-w-lg sm:rounded-3xl flex flex-col py-8 shadow"
           onSubmit={addOrEditTask}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
         >
           <button
             className="absolute right-3 top-1 text-xl"
@@ -148,7 +158,7 @@ export default function Tasks() {
               adicionar
             </button>
           </div>
-        </form>
+        </motion.form>
       )}
       <div
         className={`w-full bg-sky-900 flex-1 flex-col sm:rounded-3xl shadow-lg sm:max-w-lg sm:px-2 py-10 min-h-screen ${
@@ -160,8 +170,18 @@ export default function Tasks() {
           <h1 className="text-gray-50 text-2xl">{user}</h1>
         </div>
         <ol className="flex gap-4 flex-col bg-gray-50 w-full max-w-md m-auto p-4 rounded-3xl h-fit">
-          {tasks.map((task) => (
-            <li
+          {tasks.length === 0 && (
+            <motion.li>
+              <h3 className="text-gray-600">
+                Você ainda não tem nenhuma tarefa, que tal adicionar uma?
+              </h3>
+            </motion.li>
+          )}
+          {tasks.map((task, i) => (
+            <motion.li
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 * i }}
               key={task._id}
               className="bg-gray-100 shadow p-3 rounded-3xl hover:scale-110 hover:shadow-2xl"
             >
@@ -200,14 +220,17 @@ export default function Tasks() {
                   />
                 </button>
               </div>
-            </li>
+            </motion.li>
           ))}
         </ol>
       </div>
-      <div
+      <motion.div
         className={`bg-sky-900 max-sm:shadow-lg sm:bg-transparent sm:rounded-r-3xl p-1 flex gap-3 items-center max-sm:bottom-0 max-sm:fixed w-full max-sm:justify-center sm:flex-col sm:max-w-fit ${
           form && "blur-sm"
-        }`}
+        } `}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
       >
         <button
           className="text-gray-50 sm:rounded-full w-12 h-12 sm:hover:scale-110 transition-all delay-75 sticky top-1 text-2xl shadow-xl bg-sky-900"
@@ -232,7 +255,7 @@ export default function Tasks() {
             size="1x"
           />
         </button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

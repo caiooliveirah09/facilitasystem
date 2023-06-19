@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import {
   faCircleUser,
   faLock,
@@ -18,7 +19,7 @@ import {
 import { styleInputError } from "./register/page";
 
 export const inputStyle =
-  "text-gray-500 outline-none w-full text-center shadow focus:shadow-lg py-2 placeholder-gray-500 rounded bg-sky-100";
+  "text-gray-500 outline-none w-full text-center shadow focus:shadow-lg py-2 placeholder-gray-500 rounded bg-sky-100 focus:scale-110 transition-all focus:z-50";
 
 export default function Login() {
   const router = useRouter();
@@ -43,7 +44,10 @@ export default function Login() {
   };
 
   return (
-    <form
+    <motion.form
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
       onSubmit={login}
       className="w-full sm:max-w-sm bg-gray-50 sm:h-fit py-20 p-2 flex flex-col gap-4 justify-center sm:rounded-3xl px-10 relative shadow-lg m-auto h-screen"
     >
@@ -55,9 +59,8 @@ export default function Login() {
       />
       <div className="flex relative items-center">
         <FontAwesomeIcon
-          className="absolute text-sky-900 start-1"
+          className="absolute text-sky-900 start-1 text-2xl"
           icon={faUser}
-          size="2x"
         />
         <input
           type="text"
@@ -76,9 +79,8 @@ export default function Login() {
           value={password}
         />
         <FontAwesomeIcon
-          className="absolute text-sky-900 end-1"
+          className="absolute text-sky-900 end-1 text-2xl"
           icon={faLockOpen}
-          size="2x"
         />
       </div>
       {loginError && (
@@ -100,6 +102,6 @@ export default function Login() {
           clique aqui
         </button>
       </small>
-    </form>
+    </motion.form>
   );
 }

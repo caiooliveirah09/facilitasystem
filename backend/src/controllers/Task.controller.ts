@@ -13,8 +13,13 @@ export default class TaskController {
   }
 
   public async createNewTask() {
-    const { body } = this.req;
-    const { status, message } = await this.service.createNewTask(body);
+    const { title, description } = this.req.body;
+    const { token } = this.req.params;
+    const { status, message } = await this.service.createNewTask({
+      title,
+      description,
+      token,
+    });
     return this.res.status(status).json(message);
   }
 
